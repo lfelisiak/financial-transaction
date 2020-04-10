@@ -1,0 +1,23 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "A rest api built with nodejs & express to simulate financial transactions",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpileOnly ./index.ts",
+    "prod": "tsc && node ./index.js",
+    "tsc": "tsc"
+  },
+  "author": "Luciano Felisiak <felisiakluciano@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@types/body-parser": "^1.19.0",
+    "@types/express": "^4.17.5",
+    "express": "^4.17.1",
+    "moment": "^2.24.0",
+    "node-cache": "^5.1.0",
+    "reflect-metadata": "^0.1.13",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.8.3"
+  }
+}
