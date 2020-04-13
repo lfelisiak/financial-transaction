@@ -24,4 +24,4 @@ Regarding the REST JSON API I must say that it has three endpoints which are
 `POST` `/api/v1/financial_account`
  From here we create a new transaction, if it is a valid transaction, then it gets stored in-memory with all the others valid transactions
  `GET` `/api/v1/financial_account/{id}`
- This one returns a transaction by his id, taking id as url param.
+ This one returns a transaction by his id, taking id (an integer) as url param.
