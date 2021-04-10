@@ -1,8 +1,11 @@
 import {Request,Response} from "express";
 import NodeCache from "node-cache";
 import { FinancialAccount } from "../entities/FinancialAccount";
+import { Lock } from "../entities/Lock";
 import { FinancialAccountTransaction } from "../entities/FinancialAccountTransaction";
-var cache:NodeCache = new NodeCache();
+
+let cache:NodeCache = new NodeCache();
+let transactionLock:Lock = new Lock();
 
 export class FinancialAccountController{
 
@@ -49,12 +52,15 @@ export class FinancialAccountController{
             if(!amount){
                 throw new Error("Amount is required and must be a numeric value.");
             }
-            const transaction = await this.financialAccount.performTransaction(amount,type);
-            if(transaction)
-                this.financialAccountHistory.push((new FinancialAccountTransaction(this.financialAccountHistory.length + 1,amount, type)));
-            cache.set("financialAccountHistory",this.financialAccountHistory);
-            cache.set("financialAccount",this.financialAccount);
-            result = {code:200,status:true,data:{financialAccountHistory:this.financialAccountHistory,financialAccount:this.financialAccount}};
+            if(transactionLock.lock()){
+                const transaction = await this.financialAccount.performTransaction(amount,type);
+                if(transaction)
+                    this.financialAccountHistory.push((new FinancialAccountTransaction(this.financialAccountHistory.length + 1,amount, type)));
+                cache.set("financialAccountHistory",this.financialAccountHistory);
+                cache.set("financialAccount",this.financialAccount);               
+                transactionLock.unlock();
+            }
+            result = {code:200,status:true,data:{financialAccountHistory:this.financialAccountHistory,financialAccount:this.financialAccount}}
             return result;
         }catch(error){
             console.log(error);
